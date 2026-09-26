@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b06885e8-5004-468e-99ec-58fbb7d63661" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/golinter.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/app/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/app/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/handlers/orders/orders.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handlers/orders/orders.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/postgres/orders.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgres/orders.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/postgres/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgres/product.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/postgres/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgres/users.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="50" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file:///usr/lib/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="v2" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLinterSelectedExecutable" path="$USER_HOME$/go/bin/golangci-lint" />
+  <component name="HttpClientOnboardingState">{
+  &quot;isOnboardingCommentShown&quot;: true
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="3Jio1Yo9qLir6yJTLinDsmFrMyL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Go Build.go build ./cmd/app.executor": "Run",
+    "Go Build.go build go-pet-shop/cmd/app.executor": "Run",
+    "Go Build.go build go-pet-shop2/cmd/app.executor": "Run",
+    "HTTP Request.generated-requests | #1.executor": "Run",
+    "HTTP Request.generated-requests | #2.executor": "Run",
+    "HTTP Request.generated-requests | #3.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
+    "RunOnceActivity.GoLinterPluginStorageMigration": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.go.analysis.ui.options.defaults": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "v2",
+    "go.sdk.automatically.set": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/home/lusa",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "go.sdk",
+    "to.speed.mode.migration.done": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
+  }
+}]]></component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="GoApplicationRunConfiguration" />
+      </set>
+    </option>
+    <option name="configurationStatuses">
+      <map>
+        <entry key="GoApplicationRunConfiguration">
+          <value>
+            <map>
+              <entry key="go build go-pet-shop/cmd/app" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+        <entry key="HttpClient.HttpRequestRunConfigurationType">
+          <value>
+            <map>
+              <entry key="generated-requests | #1" value="STOPPED" />
+              <entry key="generated-requests | #2" value="STOPPED" />
+              <entry key="generated-requests | #3" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="RunManager" selected="Go Build.go build go-pet-shop/cmd/app">
+    <configuration name="go build ./cmd/app" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="go-pet-shop2" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="./cmd/app" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/app/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build go-pet-shop2/cmd/app" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="go-pet-shop2" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-pet-shop2/cmd/app" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build go-pet-shop/cmd/app" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="go-pet-shop2" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="go-pet-shop/cmd/app" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/app/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="generated-requests | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#1" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="generated-requests | #2" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#2" index="2" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="generated-requests | #3" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#3" index="3" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build go-pet-shop2/cmd/app" />
+      <item itemvalue="Go Build.go build go-pet-shop/cmd/app" />
+      <item itemvalue="Go Build.go build ./cmd/app" />
+      <item itemvalue="HTTP Request.generated-requests | #1" />
+      <item itemvalue="HTTP Request.generated-requests | #2" />
+      <item itemvalue="HTTP Request.generated-requests | #3" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build go-pet-shop/cmd/app" />
+        <item itemvalue="Go Build.go build ./cmd/app" />
+        <item itemvalue="HTTP Request.generated-requests | #1" />
+        <item itemvalue="HTTP Request.generated-requests | #2" />
+        <item itemvalue="HTTP Request.generated-requests | #3" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-72a9cf600ed8-dfa3e7267ae0-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-253.30387.193" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-GO-253.30387.193" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b06885e8-5004-468e-99ec-58fbb7d63661" name="Changes" comment="" />
+      <created>1790153034295</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1790153034295</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

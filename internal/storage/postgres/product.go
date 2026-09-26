@@ -37,6 +37,7 @@ func (s *Storage) GetAllProducts(ctx context.Context) ([]models.Product, error) 
 	const fn = "storage.postgres.product.GetAllProducts"
 
 	rows, err := s.db.Query(ctx, `SELECT id, name, price, stock FROM products ORDER BY id`)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", fn, err)
 	}

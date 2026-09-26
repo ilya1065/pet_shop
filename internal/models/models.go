@@ -2,18 +2,17 @@ package models
 
 import "time"
 
-
 type User struct {
-	ID int `json:"ID"`
-	Name string `json:"name"`
+	ID    int    `json:"ID"`
+	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
 type Product struct {
 	ID    int
-	Name  string `json:"name"`
+	Name  string  `json:"name"`
 	Price float64 `json:"price"`
-	Stock int `json:"stock"` // количество на складе
+	Stock int     `json:"stock"` // количество на складе
 }
 
 type Customer struct {
@@ -23,14 +22,14 @@ type Customer struct {
 }
 
 type Order struct {
-	ID         int
-	CustomerID int
-	CreatedAt  time.Time
+	ID         int       `json:"id"`
+	CustomerID int       `json:"customer_id"`
+	CreatedAt  time.Time `json:"created_at"`
 }
 
 type OrderItem struct {
-	ID        int
-	OrderID   int
-	ProductID int
-	Quantity  int
+	ID        int `json:"id"`
+	OrderID   int `json:"order_id"`
+	ProductID int `json:"product_id"`
+	Quantity  int `json:"quantity"`
 }

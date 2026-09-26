@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"go-pet-shop/internal/models"
 
@@ -14,11 +13,8 @@ func (s *Storage) CreateOrder(ctx context.Context, order models.Order) (int, err
 	var id int
 	err := s.db.QueryRow(ctx, `insert into orders(user_id,total_price,created_at)
 									values ($1,0,current_timestamp)
-									returning id`).Scan(&id)
+									returning id`, order.CustomerID).Scan(&id)
 	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			return 0, ErrNotFound
-		}
 		return 0, fmt.Errorf("%w, %s", err, fn)
 	}
 	return id, nil
@@ -40,7 +36,7 @@ func (s Storage) AddOrderItem(ctx context.Context, item models.OrderItem) error 
 	if err != nil {
 		return fmt.Errorf("%w, %s", err, fn)
 	}
-	_, err = tx.Exec(ctx, `update orders set total_price = total_price + $1 * $2  where id = $3`, price, item.Quantity, item.OrderID)
+	_, err = tx.Exec(ctx, `update orders set total_price = total_price +($1::integer * $2::integer)  where id = $3`, price, item.Quantity, item.OrderID)
 	if err != nil {
 		return fmt.Errorf("%w, %s", err, fn)
 	}
@@ -54,7 +50,7 @@ func (s Storage) AddOrderItem(ctx context.Context, item models.OrderItem) error 
 func (s Storage) GetOrderByID(ctx context.Context, id int) (*models.Order, error) {
 	const fn = "storage.postgers.order.GetOrderByID"
 	var order models.Order
-	err := s.db.QueryRow(ctx, `select id, user_id,create_at from orders where id = $1`, id).Scan(&order.ID, &order.CustomerID, &order.CreatedAt)
+	err := s.db.QueryRow(ctx, `select id, user_id,created_at from orders where id = $1`, id).Scan(&order.ID, &order.CustomerID, &order.CreatedAt)
 	if err != nil {
 		return nil, fmt.Errorf("%w, %s", err, fn)
 	}
@@ -70,13 +66,14 @@ func (s *Storage) GetOrdersByUserEmail(ctx context.Context, email string) ([]mod
 									join users as u 
 									on  u.id = o.user_id
 									where u.email = $1`, email)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("%w, %s", err, fn)
 	}
 	var orders []models.Order
 	for rows.Next() {
 		var order models.Order
-		err = rows.Scan(order.ID, order.CustomerID, order.CreatedAt)
+		err = rows.Scan(&order.ID, &order.CustomerID, &order.CreatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("%w, %s", err, fn)
 		}
@@ -89,8 +86,9 @@ func (s *Storage) GetOrdersByUserEmail(ctx context.Context, email string) ([]mod
 func (s *Storage) GetOrderItemsByOrderID(ctx context.Context, orderID int) ([]models.OrderItem, error) {
 	const fn = "storage.postgers.order.GetOrderItemsByOrderID"
 	rows, err := s.db.Query(ctx, `select i.id , i.order_id, i.product_id,i.quantity from order_items as i 
-										join orders as o on o.id  = i.order_id
-										where o.id = $1`, orderID)
+										where i.order_id = $1`, orderID)
+	defer rows.Close()
+
 	if err != nil {
 		return nil, fmt.Errorf("%w, %s", err, fn)
 	}
@@ -98,7 +96,7 @@ func (s *Storage) GetOrderItemsByOrderID(ctx context.Context, orderID int) ([]mo
 	var items []models.OrderItem
 	for rows.Next() {
 		var item models.OrderItem
-		err = rows.Scan(item.ID, item.OrderID, item.ProductID, item.Quantity)
+		err = rows.Scan(&item.ID, &item.OrderID, &item.ProductID, &item.Quantity)
 		if err != nil {
 			return nil, fmt.Errorf("%w, %s", err, fn)
 		}

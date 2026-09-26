@@ -37,6 +37,7 @@ func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*models.Use
 func (s Storage) GetAllUsers(ctx context.Context) ([]models.User, error) {
 	const fn = "storage.postgres.user.GetAllUsers"
 	rows, err := s.db.Query(ctx, `select id, name ,email from users`)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("%s, %w", fn, err)
 	}
