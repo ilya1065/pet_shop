@@ -106,3 +106,57 @@ func (s *Storage) GetOrderItemsByOrderID(ctx context.Context, orderID int) ([]mo
 
 	return items, nil
 }
+
+func (s *Storage) PlaceOrder(ctx context.Context, userEmail string, items []models.OrderItem) (int, error) {
+	const fn = "storage.postgers.order.PlaceOrder"
+
+	tx, err := s.db.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return 0, fmt.Errorf("%w, %s", err, fn)
+	}
+	var totalPrice float64
+	for _, item := range items {
+		var price float64
+		err = tx.QueryRow(ctx, `UPDATE products
+							SET stock = stock - $1
+							WHERE id = $2 AND stock >= $3 
+							RETURNING price `,
+			item.Quantity,
+			item.ProductID,
+			item.Quantity).Scan(&price)
+		if err != nil {
+			return 0, fmt.Errorf("%w, %s", err, fn)
+		}
+		totalPrice += price * float64(item.Quantity)
+	}
+	var userID int
+	err = tx.QueryRow(ctx, `select id from users where email = $1`, userEmail).Scan(&userID)
+	if err != nil {
+		return 0, fmt.Errorf("%w, %s", err, fn)
+	}
+	var ordersID int
+	err = tx.QueryRow(ctx, `insert into orders(user_id, total_price,created_at)
+								values ($1,$2,current_timestamp)
+								returning id`, userID, totalPrice).Scan(&ordersID)
+	if err != nil {
+		return 0, fmt.Errorf("%w, %s", err, fn)
+	}
+	for _, item := range items {
+		_, err = tx.Exec(ctx, `insert into order_items(order_id,product_id,quantity)
+								values ($1,$2,$3)`, ordersID, item.ProductID, item.Quantity)
+		if err != nil {
+			return 0, fmt.Errorf("%w, %s", err, fn)
+		}
+	}
+	_, err = tx.Exec(ctx, `insert into transactions(order_id,status,amount, created_at)
+								values ($1,$2,$3,current_timestamp)`, ordersID, "done", totalPrice)
+
+	if err != nil {
+		return 0, fmt.Errorf("%w, %s", err, fn)
+	}
+	err = tx.Commit(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("%w, %s", err, fn)
+	}
+	return ordersID, nil
+}

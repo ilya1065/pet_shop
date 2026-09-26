@@ -33,3 +33,5 @@ CREATE TABLE transactions (
     status TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+

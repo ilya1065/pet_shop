@@ -19,6 +19,7 @@ type Orders interface {
 	GetOrderByID(ctx context.Context, id int) (*models.Order, error)
 	GetOrdersByUserEmail(ctx context.Context, email string) ([]models.Order, error)
 	GetOrderItemsByOrderID(ctx context.Context, orderID int) ([]models.OrderItem, error)
+	PlaceOrder(ctx context.Context, userEmail string, items []models.OrderItem) (orderID int, err error)
 }
 
 type Handler struct {
@@ -262,4 +263,40 @@ func isEmail(email string) bool {
 		return false
 	}
 	return email == addr.Address
+}
+
+type placeOrderDTO struct {
+	Email string
+	Items []models.OrderItem
+}
+
+func (h *Handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
+	const fn = "hendlers.orders.PlaceOrder"
+	log := setupLogger(h.log, fn, middleware.GetReqID(r.Context()))
+	log.Info("start place order")
+	var req placeOrderDTO
+	err := render.DecodeJSON(r.Body, &req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, map[string]string{
+			"error":   "bad request",
+			"message": "error decode json",
+		})
+		return
+	}
+	orderID, err := h.storage.PlaceOrder(r.Context(), req.Email, req.Items)
+	if err != nil {
+		log.Error("error place order", slog.Any("error", err))
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, map[string]string{
+			"error":   "internal server error",
+			"message": "error place order",
+		})
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	render.JSON(w, r, map[string]any{
+		"order id": orderID,
+	})
+
 }

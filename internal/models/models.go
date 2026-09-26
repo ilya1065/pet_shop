@@ -33,3 +33,11 @@ type OrderItem struct {
 	ProductID int `json:"product_id"`
 	Quantity  int `json:"quantity"`
 }
+
+type Transactions struct {
+	ID       int
+	OrderID  int
+	Status   string
+	Amount   float64
+	CreateAt time.Time
+}
