@@ -19,6 +19,7 @@ type Products interface {
 	CreateProduct(ctx context.Context, product models.Product) (int, error)
 	DeleteProduct(ctx context.Context, id int) error
 	UpdateProduct(ctx context.Context, product models.Product) error
+	GetProductByID(ctx context.Context, id int) (*models.Product, error)
 }
 
 type Handler struct {
@@ -32,6 +33,49 @@ func New(log *slog.Logger, storage Products) *Handler {
 		storage: storage,
 	}
 }
+
+func (h *Handler) GetProductByID(w http.ResponseWriter, r *http.Request) {
+	const fn = "hendlers.product.GetPoroductByID"
+	log := h.log.With(
+		slog.String("fn", fn),
+		slog.String("requser_id", middleware.GetReqID(r.Context())),
+	)
+	log.Info("getting product", slog.String("url", r.URL.String()))
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.Error("id is empty")
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, map[string]string{
+			"error":   "bad request",
+			"massage": "product ID is required",
+		})
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		slog.Error("invalid format", slog.Any("error", err), slog.String("id", idStr))
+		render.JSON(w, r, map[string]string{
+			"error":   "bad request",
+			"message": "Product ID must be a number",
+		})
+	}
+	product, err := h.storage.GetProductByID(r.Context(), id)
+	if err != nil {
+		slog.Error("failed getting product", slog.Any("error", err))
+		w.WriteHeader(http.StatusInternalServerError)
+		render.JSON(w, r, map[string]string{
+			"error":   "internal server error",
+			"massage": "filed getting product",
+		})
+		return
+	}
+
+	log.Info("Retrieved products successfully",
+		slog.String("url", r.URL.String()),
+		slog.String("name", product.Name))
+	render.JSON(w, r, product)
+}
+
 func (h *Handler) GetAllProducts(w http.ResponseWriter, r *http.Request) {
 	const fn = "handlers.products.GetAllProducts"
 	log := h.log.With(

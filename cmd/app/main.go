@@ -4,7 +4,9 @@ import (
 	"context"
 	"go-pet-shop/internal/config"
 	"go-pet-shop/internal/handlers"
+	"go-pet-shop/internal/handlers/orders"
 	"go-pet-shop/internal/handlers/product"
+	"go-pet-shop/internal/handlers/user"
 	"go-pet-shop/internal/lib/logger"
 	"go-pet-shop/internal/storage/postgres"
 	"log/slog"
@@ -47,7 +49,6 @@ func main() {
 	// Middlewares
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Recoverer)
-	router.Use(middleware.URLFormat)
 	router.Use(logger.CustomLogger(log))
 
 	// Handlers
@@ -57,6 +58,20 @@ func main() {
 	router.Post("/products", productHandler.CreateProduct)
 	router.Delete("/products/{id}", productHandler.DeleteProduct)
 	router.Put("/products/{id}", productHandler.UpdateProduct)
+	router.Get("/products/{id}", productHandler.GetProductByID)
+
+	//users
+	userHandler := user.New(log, storage)
+	router.Post("/users", userHandler.CreateUser)
+	router.Get("/users", userHandler.GetAllUsers)
+	router.Get("/users/{email}", userHandler.GetUserByEmail)
+
+	//order
+	ordersHandler := orders.New(log, storage)
+	router.Post("/orders", ordersHandler.CreateOrder)
+	router.Post("/orders/{id}/items", ordersHandler.AddOrderItem)
+	router.Get("/orders/{id}", ordersHandler.GetTheOrderDetails)
+	router.Get("/users/orders", ordersHandler.GetOrderUserByEmail)
 
 	// Settings and started server
 	srv := &http.Server{
