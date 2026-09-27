@@ -3,7 +3,6 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL
 );
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
@@ -34,4 +33,7 @@ CREATE TABLE transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+CREATE INDEX idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX idx_order_items_product_id ON order_items(product_id);
+CREATE INDEX idx_transactions_order_id ON transactions(order_id);

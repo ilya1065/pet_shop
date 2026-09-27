@@ -39,13 +39,21 @@
 
 Для запуска нужны Docker и Docker Compose.
 
-1. Создайте локальный файл с переменными окружения:
+1. Клонируйте репозиторий и перейдите в ветку `v4`:
+
+```bash
+git clone https://github.com/ilya1065/pet_shop.git
+cd pet_shop
+git checkout v4
+```
+
+2. Создайте локальный файл с переменными окружения:
 
 ```bash
 cp .env.example .env
 ```
 
-2. В ветке v4 поднимите весь проект одной командой:
+3. Поднимите весь проект одной командой:
 
 ```bash
 docker compose up --build
