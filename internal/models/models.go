@@ -25,6 +25,7 @@ type Order struct {
 	ID         int       `json:"id"`
 	CustomerID int       `json:"customer_id"`
 	CreatedAt  time.Time `json:"created_at"`
+	TotalPrice float64   `json:"total_price"`
 }
 
 type OrderItem struct {
@@ -40,4 +41,19 @@ type Transactions struct {
 	Status   string
 	Amount   float64
 	CreateAt time.Time
+}
+
+type OrderDetail struct {
+	OrderID            int         `json:"order_id"`
+	CreateAt           time.Time   `json:"create_at"`
+	TotalPrice         float64     `json:"total_price"`
+	Items              []OrderItem `json:"items"`
+	TransactionsStatus string      `json:"transactions_status"`
+}
+
+type PopularProduct struct {
+	ProductID   int     `json:"product_id"`
+	ProductName string  `json:"product_name"`
+	TotalSold   int     `json:"total_sold"`
+	SumSold     float64 `json:"sum_sold"`
 }

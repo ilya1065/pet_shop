@@ -5,12 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b06885e8-5004-468e-99ec-58fbb7d63661" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/internal/handlers/analytics/analitics.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/storage/postgres/analytics.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b1c36e99-728b-4af3-8b3e-a3d74199c840.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b1c36e99-728b-4af3-8b3e-a3d74199c840.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b1c36e99-728b-4af3-8b3e-a3d74199c840/storage_v2/_src_/database/pet_shop.Fr67HA/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b1c36e99-728b-4af3-8b3e-a3d74199c840/storage_v2/_src_/database/pet_shop.Fr67HA/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/app/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/app/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/handlers/orders/orders.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handlers/orders/orders.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/models.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/storage/postgres/orders.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgres/orders.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/0001_create_tables.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/0001_create_tables.up.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,7 +20,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="50" />
+    <option name="cachedIndexableFilesCount" value="62" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -76,7 +78,7 @@
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "v3",
+    "git-widget-placeholder": "v4",
     "go.sdk.automatically.set": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/home/lusa",
@@ -84,7 +86,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "go.sdk",
+    "settings.editor.selected.configurable": "SQL Resolution Scopes",
     "to.speed.mode.migration.done": "true"
   },
   "keyToStringList": {
@@ -195,5 +197,16 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

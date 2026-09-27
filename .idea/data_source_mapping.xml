@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/internal/storage/postgres/analytics.go" value="b1c36e99-728b-4af3-8b3e-a3d74199c840" />
     <file url="file://$PROJECT_DIR$/internal/storage/postgres/orders.go" value="b1c36e99-728b-4af3-8b3e-a3d74199c840" />
   </component>
 </project>
