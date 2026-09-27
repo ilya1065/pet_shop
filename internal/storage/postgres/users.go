@@ -7,6 +7,7 @@ import (
 	"go-pet-shop/internal/models"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (s *Storage) CreateUser(ctx context.Context, user models.User) (int, error) {
@@ -14,6 +15,10 @@ func (s *Storage) CreateUser(ctx context.Context, user models.User) (int, error)
 	var id int
 	err := s.db.QueryRow(ctx, `insert into users(name, email) values ($1, $2) returning id`, user.Name, user.Email).Scan(&id)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return 0, fmt.Errorf("%s: %w", fn, ErrInvalidInput)
+		}
 		return 0, fmt.Errorf("%s,%w", fn, err)
 	}
 	return id, nil
@@ -37,10 +42,10 @@ func (s *Storage) GetUserByEmail(ctx context.Context, email string) (*models.Use
 func (s Storage) GetAllUsers(ctx context.Context) ([]models.User, error) {
 	const fn = "storage.postgres.user.GetAllUsers"
 	rows, err := s.db.Query(ctx, `select id, name ,email from users`)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("%s, %w", fn, err)
 	}
+	defer rows.Close()
 	var users []models.User
 	for rows.Next() {
 		var user models.User
@@ -49,6 +54,9 @@ func (s Storage) GetAllUsers(ctx context.Context) ([]models.User, error) {
 			return nil, fmt.Errorf("%s, %w", fn, err)
 		}
 		users = append(users, user)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s, %w", fn, err)
 	}
 	return users, nil
 }

@@ -2,7 +2,9 @@ package orders
 
 import (
 	"context"
+	"errors"
 	"go-pet-shop/internal/models"
+	"go-pet-shop/internal/storage/postgres"
 	"log/slog"
 	"net/http"
 	"net/mail"
@@ -38,6 +40,20 @@ func setupLogger(logger *slog.Logger, fn, reqID string) *slog.Logger {
 	return logger.With(slog.String("fn", fn), slog.String("request id", reqID))
 }
 
+func writeStorageError(w http.ResponseWriter, r *http.Request, err error) {
+	status := http.StatusInternalServerError
+	message := "internal server error"
+	if errors.Is(err, postgres.ErrNotFound) {
+		status = http.StatusNotFound
+		message = "not found"
+	} else if errors.Is(err, postgres.ErrInvalidInput) {
+		status = http.StatusBadRequest
+		message = "invalid input"
+	}
+	w.WriteHeader(status)
+	render.JSON(w, r, map[string]string{"error": message})
+}
+
 func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	const fn = "hendlers.orders.CreateOrder"
 	log := setupLogger(h.log, fn, middleware.GetReqID(r.Context()))
@@ -63,11 +79,7 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	id, err := h.storage.CreateOrder(r.Context(), order)
 	if err != nil {
 		log.Error("error created order", slog.Any("error", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, map[string]string{
-			"error":   "internal server error",
-			"message": "failed creating orders",
-		})
+		writeStorageError(w, r, err)
 		return
 	}
 	log.Info("creating order successful ")
@@ -96,7 +108,7 @@ func (h *Handler) AddOrderItem(w http.ResponseWriter, r *http.Request) {
 	}
 	if id <= 0 {
 		log.Error("id <= 0")
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{
 			"error":   "bad request",
 			"massege": "invalid id",
@@ -139,11 +151,7 @@ func (h *Handler) AddOrderItem(w http.ResponseWriter, r *http.Request) {
 	err = h.storage.AddOrderItem(r.Context(), item)
 	if err != nil {
 		log.Error("error add order item", slog.Any("error", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, map[string]string{
-			"error":   "internal server error",
-			"massege": "filed add order item",
-		})
+		writeStorageError(w, r, err)
 		return
 	}
 	log.Info("add order item successful")
@@ -161,7 +169,7 @@ func (h *Handler) GetTheOrderDetails(w http.ResponseWriter, r *http.Request) {
 	strId := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(strId)
-	if err != nil {
+	if err != nil || id <= 0 {
 		slog.Error("error conversion strID to id ")
 		w.WriteHeader(http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{
@@ -173,11 +181,7 @@ func (h *Handler) GetTheOrderDetails(w http.ResponseWriter, r *http.Request) {
 	order, err := h.storage.GetOrderByID(r.Context(), id)
 	if err != nil {
 		log.Error("error getting order by id ", slog.Any("error", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, map[string]string{
-			"error":   "internal server error",
-			"massage": "error getting order details",
-		})
+		writeStorageError(w, r, err)
 		return
 	}
 	orderItems, err := h.storage.GetOrderItemsByOrderID(r.Context(), order.ID)
@@ -266,8 +270,8 @@ func isEmail(email string) bool {
 }
 
 type placeOrderDTO struct {
-	Email string
-	Items []models.OrderItem
+	Email string             `json:"email"`
+	Items []models.OrderItem `json:"items"`
 }
 
 func (h *Handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
@@ -284,19 +288,27 @@ func (h *Handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+	if !isEmail(req.Email) || len(req.Items) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, map[string]string{"error": "invalid email or empty items"})
+		return
+	}
+	for _, item := range req.Items {
+		if item.ProductID <= 0 || item.Quantity <= 0 {
+			w.WriteHeader(http.StatusBadRequest)
+			render.JSON(w, r, map[string]string{"error": "invalid order item"})
+			return
+		}
+	}
 	orderID, err := h.storage.PlaceOrder(r.Context(), req.Email, req.Items)
 	if err != nil {
 		log.Error("error place order", slog.Any("error", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, map[string]string{
-			"error":   "internal server error",
-			"message": "error place order",
-		})
+		writeStorageError(w, r, err)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	render.JSON(w, r, map[string]any{
-		"order id": orderID,
+		"order_id": orderID,
 	})
 
 }

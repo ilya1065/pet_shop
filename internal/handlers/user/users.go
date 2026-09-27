@@ -40,8 +40,7 @@ func setupLogger(fn string, ctx context.Context, logger *slog.Logger) *slog.Logg
 }
 
 func validateUser(name, email string) map[string]string {
-
-	var errors map[string]string
+	errors := make(map[string]string)
 	if name == "" {
 		errors["name"] = "name is empty"
 	}
@@ -51,9 +50,9 @@ func validateUser(name, email string) map[string]string {
 	if len(name) < 2 {
 		errors["name"] = "the name is too short < 2"
 	}
-	_, err := mail.ParseAddress(email)
-	if err != nil {
-		errors["email"] = err.Error()
+	addr, err := mail.ParseAddress(email)
+	if err != nil || addr.Address != email {
+		errors["email"] = "invalid email"
 	}
 	if len(errors) == 0 {
 		return nil
@@ -77,21 +76,28 @@ func (h Hendler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	name := strings.TrimSpace(user.Name)
-	email := strings.ToLower(user.Email)
-	errors := validateUser(name, email)
-	if errors != nil {
+	email := strings.ToLower(strings.TrimSpace(user.Email))
+	validationErrors := validateUser(name, email)
+	if validationErrors != nil {
 		log.Error("validation error")
 		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, errors)
+		render.JSON(w, r, validationErrors)
 		return
 	}
+	user.Name, user.Email = name, email
 	id, err := h.storage.CreateUser(r.Context(), user)
 	if err != nil {
+		if errors.Is(err, postgres.ErrInvalidInput) {
+			w.WriteHeader(http.StatusBadRequest)
+			render.JSON(w, r, map[string]string{"error": "invalid input"})
+			return
+		}
 		w.WriteHeader(http.StatusInternalServerError)
 		render.JSON(w, r, map[string]string{
 			"error":   "internal server error",
 			"massege": "failed to create user"},
 		)
+		return
 	}
 	log.Info("user created successfully")
 	w.WriteHeader(http.StatusCreated)
@@ -109,7 +115,8 @@ func (h Hendler) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
 	log.Info("start getting user", slog.String("url", r.URL.String()))
 
 	email := chi.URLParam(r, "email")
-	if email == "" {
+	addr, err := mail.ParseAddress(email)
+	if err != nil || addr.Address != email {
 		w.WriteHeader(http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{
 			"error":   "bad request",
@@ -122,7 +129,7 @@ func (h Hendler) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, postgres.ErrNotFound) {
 			log.Info("email is not found", slog.String("url", r.URL.String()))
 			w.WriteHeader(http.StatusNotFound)
-			render.JSON(w,r,map[string]string{
+			render.JSON(w, r, map[string]string{
 				"massage": "not found",
 			})
 			return

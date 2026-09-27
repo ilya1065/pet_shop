@@ -10,6 +10,14 @@ type ProductsMock struct {
 	CreateProductFunc  func(ctx context.Context, product models.Product) (int, error)
 	DeleteProductFunc  func(ctx context.Context, id int) error
 	UpdateProductFunc  func(ctx context.Context, product models.Product) error
+	GetProductByIDFunc func(ctx context.Context, id int) (*models.Product, error)
+}
+
+func (m *ProductsMock) GetProductByID(ctx context.Context, id int) (*models.Product, error) {
+	if m.GetProductByIDFunc != nil {
+		return m.GetProductByIDFunc(ctx, id)
+	}
+	return nil, nil
 }
 
 func (m *ProductsMock) GetAllProducts(ctx context.Context) ([]models.Product, error) {

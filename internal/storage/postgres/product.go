@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"go-pet-shop/internal/models"
+
+	"github.com/jackc/pgx/v5"
 )
 
 var (
@@ -28,6 +30,9 @@ func (s *Storage) GetProductByID(ctx context.Context, id int) (*models.Product, 
 		&product.Stock,
 	)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, fmt.Errorf("%s: %w", fn, ErrNotFound)
+		}
 		return nil, fmt.Errorf("%s %w", fn, err)
 	}
 	return &product, nil
@@ -37,7 +42,6 @@ func (s *Storage) GetAllProducts(ctx context.Context) ([]models.Product, error) 
 	const fn = "storage.postgres.product.GetAllProducts"
 
 	rows, err := s.db.Query(ctx, `SELECT id, name, price, stock FROM products ORDER BY id`)
-	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", fn, err)
 	}

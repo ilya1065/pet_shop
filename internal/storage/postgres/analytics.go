@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go-pet-shop/internal/models"
+	"sort"
 )
 
 func (s *Storage) GetUserOrderHistory(ctx context.Context, email string) ([]models.OrderDetail, error) {
@@ -21,10 +22,12 @@ select o.id,
 join public.orders o on u.id = o.user_id
 join public.order_items oi on o.id = oi.order_id
 join public.transactions t on o.id = t.order_id
-where u.email = $1`, email)
+where u.email = $1
+order by o.id, oi.id`, email)
 	if err != nil {
 		return nil, fmt.Errorf("%w, %s", err, fn)
 	}
+	defer rows.Close()
 	ordersMap := make(map[int]*models.OrderDetail)
 	for rows.Next() {
 		var (
@@ -43,6 +46,7 @@ where u.email = $1`, email)
 		if err != nil {
 			return nil, fmt.Errorf("%w, %s", err, fn)
 		}
+		item.OrderID = order.OrderID
 
 		existOrder, exist := ordersMap[order.OrderID]
 		if !exist {
@@ -52,17 +56,23 @@ where u.email = $1`, email)
 
 		existOrder.Items = append(existOrder.Items, item)
 	}
-	var ordersDetail []models.OrderDetail
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%w, %s", err, fn)
+	}
+	ordersDetail := make([]models.OrderDetail, 0, len(ordersMap))
 	for _, orderDetail := range ordersMap {
 		ordersDetail = append(ordersDetail, *orderDetail)
 	}
+	sort.Slice(ordersDetail, func(i, j int) bool {
+		return ordersDetail[i].OrderID < ordersDetail[j].OrderID
+	})
 	return ordersDetail, nil
 
 }
 
 func (s *Storage) GetPopularProducts(ctx context.Context) ([]models.PopularProduct, error) {
 	const fn = "storage.postgers.analytics.GetPopularProduct"
-	var popularProducts []models.PopularProduct
+	popularProducts := make([]models.PopularProduct, 0)
 	rows, err := s.db.Query(ctx, `select p.id,
        							p.name,
        							sum(quantity* price) as SumSold,
@@ -73,7 +83,7 @@ func (s *Storage) GetPopularProducts(ctx context.Context) ([]models.PopularProdu
 						join public.transactions t on t.order_id = o.id
 						where t.status = 'done'
 						group by p.id
-						order by TotalSold`)
+						order by TotalSold desc `)
 	if err != nil {
 		return nil, fmt.Errorf("%w,%s", err, fn)
 	}

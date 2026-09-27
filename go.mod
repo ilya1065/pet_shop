@@ -1,6 +1,6 @@
 module go-pet-shop
 
-go 1.27.1
+go 1.25.10
 
 require (
 	github.com/go-chi/chi v1.5.5

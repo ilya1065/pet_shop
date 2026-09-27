@@ -5,14 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b06885e8-5004-468e-99ec-58fbb7d63661" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/internal/handlers/analytics/analitics.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/storage/postgres/analytics.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b1c36e99-728b-4af3-8b3e-a3d74199c840.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b1c36e99-728b-4af3-8b3e-a3d74199c840.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b1c36e99-728b-4af3-8b3e-a3d74199c840/storage_v2/_src_/database/pet_shop.Fr67HA/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b1c36e99-728b-4af3-8b3e-a3d74199c840/storage_v2/_src_/database/pet_shop.Fr67HA/schema/public.abK9xQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/app/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/app/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/models/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/handlers/orders/orders.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handlers/orders/orders.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/handlers/product/product_mock.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handlers/product/product_mock.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/handlers/product/products.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handlers/product/products.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/handlers/user/user_mock.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handlers/user/user_mock.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/handlers/user/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/handlers/user/users.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/postgres/analytics.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgres/analytics.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/postgres/orders.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgres/orders.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/postgres/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgres/product.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/storage/postgres/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/storage/postgres/users.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -208,5 +214,19 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VgoModernizerVersionTracker">
+    <upgrades>
+      <map>
+        <entry key="$PROJECT_DIR$/go.mod">
+          <value>
+            <VersionUpgradeInfo>
+              <version>1.27.1</version>
+              <timestamp>1790516888786</timestamp>
+            </VersionUpgradeInfo>
+          </value>
+        </entry>
+      </map>
+    </upgrades>
   </component>
 </project>
