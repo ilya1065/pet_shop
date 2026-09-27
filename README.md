@@ -35,6 +35,14 @@
 - Docker Compose;
 - Taskfile.
 
+## Клонирование
+
+```bash
+git clone https://github.com/ilya1065/pet_shop.git
+cd pet_shop
+git checkout v2
+```
+
 ## Быстрый запуск v4
 
 Для запуска нужны Docker и Docker Compose.
@@ -130,7 +138,8 @@ task migrate
 
 ### Состояние приложения
 
-- `GET /health` — с v1.
+- `GET /status` — проверка состояния, с v1;
+- `GET /health` — алиас для health-check.
 
 ### Товары
 

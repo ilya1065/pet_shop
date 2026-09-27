@@ -122,7 +122,7 @@ func (h Hendler) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, postgres.ErrNotFound) {
 			log.Info("email is not found", slog.String("url", r.URL.String()))
 			w.WriteHeader(http.StatusNotFound)
-			render.JSON(w,r,map[string]string{
+			render.JSON(w, r, map[string]string{
 				"massage": "not found",
 			})
 			return

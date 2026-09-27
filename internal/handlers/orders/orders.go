@@ -17,7 +17,7 @@ type Orders interface {
 	CreateOrder(ctx context.Context, order models.Order) (int, error) // Возвращает ID созданного заказа
 	AddOrderItem(ctx context.Context, orderItem models.OrderItem) error
 	GetOrderByID(ctx context.Context, id int) (*models.Order, error)
-	GetOrdersByUserEmail(ctx context.Context, email string) ([]models.Order, error)
+	GetOrdersByUserEmail(ctx context.Context, email string) ([]models.OrderWithItems, error)
 	GetOrderItemsByOrderID(ctx context.Context, orderID int) ([]models.OrderItem, error)
 }
 
@@ -225,35 +225,10 @@ func (h *Handler) GetOrderUserByEmail(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	var fullOrders []OrderWithItems
-
-	for _, order := range orders {
-
-		items, err := h.storage.GetOrderItemsByOrderID(r.Context(), order.ID)
-		if err != nil {
-			log.Error("error getting items")
-			w.WriteHeader(http.StatusInternalServerError)
-			render.JSON(w, r, map[string]string{
-				"error":   "internal server error",
-				"massage": "failed getting items",
-			})
-			return
-		}
-		fullOrders = append(fullOrders, OrderWithItems{
-			Order: order,
-			Items: items,
-		})
-	}
-
 	log.Info("getting order and items successful")
 	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, fullOrders)
+	render.JSON(w, r, orders)
 
-}
-
-type OrderWithItems struct {
-	Order models.Order       `json:"order"`
-	Items []models.OrderItem `json:"items"`
 }
 
 func isEmail(email string) bool {
