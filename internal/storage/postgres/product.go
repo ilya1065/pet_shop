@@ -17,10 +17,27 @@ var (
 // Иначе тайм-ауты и отмены не будут работать — все запросы всегда будут выполняться
 // с “вечным” background-контекстом.
 // GetAllProducts - получает все продукты
+
+func (s *Storage) GetProductByID(ctx context.Context, id int) (*models.Product, error) {
+	const fn = "storage.postgres.product.GetProductByID"
+	var product models.Product
+	err := s.db.QueryRow(ctx, `select id, name, price , stock from products where id = $1`, id).Scan(
+		&product.ID,
+		&product.Name,
+		&product.Price,
+		&product.Stock,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("%s %w", fn, err)
+	}
+	return &product, nil
+}
+
 func (s *Storage) GetAllProducts(ctx context.Context) ([]models.Product, error) {
 	const fn = "storage.postgres.product.GetAllProducts"
 
 	rows, err := s.db.Query(ctx, `SELECT id, name, price, stock FROM products ORDER BY id`)
+	defer rows.Close()
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", fn, err)
 	}
