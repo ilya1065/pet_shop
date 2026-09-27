@@ -2,12 +2,13 @@ package product
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go-pet-shop/internal/models"
+	"go-pet-shop/internal/storage/postgres"
 	"log/slog"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -19,6 +20,7 @@ type Products interface {
 	CreateProduct(ctx context.Context, product models.Product) (int, error)
 	DeleteProduct(ctx context.Context, id int) error
 	UpdateProduct(ctx context.Context, product models.Product) error
+	GetProductByID(ctx context.Context, id int) (*models.Product, error)
 }
 
 type Handler struct {
@@ -32,6 +34,61 @@ func New(log *slog.Logger, storage Products) *Handler {
 		storage: storage,
 	}
 }
+
+func writeStorageError(w http.ResponseWriter, r *http.Request, err error) {
+	status := http.StatusInternalServerError
+	message := "internal server error"
+	if errors.Is(err, postgres.ErrNotFound) {
+		status = http.StatusNotFound
+		message = "not found"
+	} else if errors.Is(err, postgres.ErrInvalidInput) {
+		status = http.StatusBadRequest
+		message = "invalid input"
+	}
+	w.WriteHeader(status)
+	render.JSON(w, r, map[string]string{"error": message})
+}
+
+func (h *Handler) GetProductByID(w http.ResponseWriter, r *http.Request) {
+	const fn = "hendlers.product.GetPoroductByID"
+	log := h.log.With(
+		slog.String("fn", fn),
+		slog.String("requser_id", middleware.GetReqID(r.Context())),
+	)
+	log.Info("getting product", slog.String("url", r.URL.String()))
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		slog.Error("id is empty")
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, map[string]string{
+			"error":   "bad request",
+			"massage": "product ID is required",
+		})
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id <= 0 {
+		slog.Error("invalid format", slog.Any("error", err), slog.String("id", idStr))
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, map[string]string{
+			"error":   "bad request",
+			"message": "Product ID must be a number",
+		})
+		return
+	}
+	product, err := h.storage.GetProductByID(r.Context(), id)
+	if err != nil {
+		slog.Error("failed getting product", slog.Any("error", err))
+		writeStorageError(w, r, err)
+		return
+	}
+
+	log.Info("Retrieved products successfully",
+		slog.String("url", r.URL.String()),
+		slog.String("name", product.Name))
+	render.JSON(w, r, product)
+}
+
 func (h *Handler) GetAllProducts(w http.ResponseWriter, r *http.Request) {
 	const fn = "handlers.products.GetAllProducts"
 	log := h.log.With(
@@ -103,11 +160,11 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	if product.Stock < 0 {
 		log.Error("product stock is negative", slog.Int("stock", product.Stock))
+		w.WriteHeader(http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{
 			"error":   "Bad request",
 			"message": "Product stock cannot be negative",
 		})
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -115,11 +172,7 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	productID, err := h.storage.CreateProduct(r.Context(), product)
 	if err != nil {
 		log.Error("failed to create product", slog.Any("error", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, map[string]string{
-			"error":   "Internal server error",
-			"message": "Failed to create product",
-		})
+		writeStorageError(w, r, err)
 		return
 	}
 
@@ -131,6 +184,7 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	// Возвращаем созданный продукт с его ID
 	product.ID = productID
+	w.WriteHeader(http.StatusCreated)
 	render.JSON(w, r, map[string]interface{}{
 		"status":  "Product created successfully",
 		"id":      productID,
@@ -161,7 +215,7 @@ func (h *Handler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 	// Конвертируем ID в int
 	id, err := strconv.Atoi(idStr)
-	if err != nil {
+	if err != nil || id <= 0 {
 		log.Error("invalid id format", slog.Any("error", err), slog.String("id", idStr))
 		w.WriteHeader(http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{
@@ -173,26 +227,8 @@ func (h *Handler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 	// Удаляем продукт
 	if err := h.storage.DeleteProduct(r.Context(), id); err != nil {
-		// Проверяем, является ли ошибка "не найдено" с помощью strings.Contains
-		if strings.Contains(strings.ToLower(err.Error()), "not found") ||
-			strings.Contains(strings.ToLower(err.Error()), "no rows") ||
-			strings.Contains(strings.ToLower(err.Error()), "rows affected: 0") {
-			log.Warn("product not found for deletion", slog.Int("id", id))
-			w.WriteHeader(http.StatusNotFound)
-			render.JSON(w, r, map[string]interface{}{
-				"error":   "Not found",
-				"message": fmt.Sprintf("Product with ID %d does not exist", id),
-				"id":      id,
-			})
-			return
-		}
-
 		log.Error("failed to delete product", slog.Any("error", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, map[string]string{
-			"error":   "Internal server error",
-			"message": "Failed to delete product",
-		})
+		writeStorageError(w, r, err)
 		return
 	}
 
@@ -232,7 +268,7 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 	// Конвертируем ID в int
 	id, err := strconv.Atoi(idStr)
-	if err != nil {
+	if err != nil || id <= 0 {
 		log.Error("invalid id format", slog.Any("error", err), slog.String("id", idStr))
 		w.WriteHeader(http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{
@@ -290,26 +326,8 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 
 	// Обновляем продукт
 	if err := h.storage.UpdateProduct(r.Context(), product); err != nil {
-		// Проверяем, является ли ошибка "не найдено" с помощью strings.Contains
-		if strings.Contains(strings.ToLower(err.Error()), "not found") ||
-			strings.Contains(strings.ToLower(err.Error()), "no rows") ||
-			strings.Contains(strings.ToLower(err.Error()), "rows affected: 0") {
-			log.Warn("product not found for update", slog.Int("id", id))
-			w.WriteHeader(http.StatusNotFound)
-			render.JSON(w, r, map[string]interface{}{
-				"error":   "Not found",
-				"message": fmt.Sprintf("Product with ID %d does not exist", id),
-				"id":      id,
-			})
-			return
-		}
-
 		log.Error("failed to update product", slog.Any("error", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, map[string]string{
-			"error":   "Internal server error",
-			"message": "Failed to update product",
-		})
+		writeStorageError(w, r, err)
 		return
 	}
 
