@@ -138,7 +138,8 @@ task migrate
 
 ### Состояние приложения
 
-- `GET /health` — с v1.
+- `GET /status` — проверка состояния, с v1;
+- `GET /health` — алиас для health-check.
 
 ### Товары
 
