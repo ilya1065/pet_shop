@@ -2,11 +2,18 @@ package models
 
 import "time"
 
+
+type User struct {
+	ID int `json:"ID"`
+	Name string `json:"name"`
+	Email string `json:"email"`
+}
+
 type Product struct {
 	ID    int
-	Name  string
-	Price float64
-	Stock int // количество на складе
+	Name  string `json:"name"`
+	Price float64 `json:"price"`
+	Stock int `json:"stock"` // количество на складе
 }
 
 type Customer struct {
