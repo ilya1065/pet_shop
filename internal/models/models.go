@@ -21,10 +21,16 @@ type Customer struct {
 	Email string
 }
 
+type OrderWithItems struct {
+	Order Order       `json:"order"`
+	Items []OrderItem `json:"items"`
+}
+
 type Order struct {
 	ID         int       `json:"id"`
 	CustomerID int       `json:"customer_id"`
 	CreatedAt  time.Time `json:"created_at"`
+	TotalPrice float64   `json:"total_price"`
 }
 
 type OrderItem struct {
