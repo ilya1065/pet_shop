@@ -53,8 +53,9 @@ go-pet-shop/
 ## 🛠 Как запустить
 
 1. Клонировать репозиторий:
-   `git clone https://github.com/pavloging/go-pet-shop.git`
-   `cd go-pet-shop`
+   `git clone https://github.com/ilya1065/pet_shop.git`
+   `cd pet_shop`
+   `git checkout v4`
 
 2. Настроить окружение.
 Создать файл .env и указать строку подключения к БД:

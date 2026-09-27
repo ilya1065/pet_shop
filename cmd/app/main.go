@@ -53,6 +53,7 @@ func main() {
 	// Handlers
 	productHandler := product.New(log, storage)
 	router.Get("/health", handlers.StatusHandler)
+	router.Get("/status", handlers.StatusHandler)
 	router.Get("/products", productHandler.GetAllProducts)
 	router.Post("/products", productHandler.CreateProduct)
 	router.Delete("/products/{id}", productHandler.DeleteProduct)
